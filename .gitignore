@@ -1,0 +1,6 @@
+node_modules/
+
+# Lixo do Windows/WSL
+*:Zone.Identifier
+.DS_Store
+Thumbs.db
