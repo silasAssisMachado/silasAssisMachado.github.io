@@ -11,20 +11,25 @@
   <link rel="icon" href="assets/favicon-32.png" sizes="32x32" />
   <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
 
-  <!-- Cartão de compartilhamento (WhatsApp, LinkedIn, Slack). As URLs são
-       absolutas de propósito: o WhatsApp não resolve caminho relativo, e sem
-       isso o link sai pelado. A imagem sai de `npm run social`. -->
+  <!-- Cartão de compartilhamento. Duas regras aprendidas na marra:
+       1. URL absoluta — o WhatsApp não resolve caminho relativo, e sem isso o
+          link sai pelado.
+       2. og:image é QUADRADO. O WhatsApp só desenha o preview grande com
+          imagem quadrada; num 1.91:1 ele degrada pra uma miniatura de 76px na
+          lateral e o cartão fica ilegível. O horizontal continua existindo pro
+          Twitter/X, que rende 1.91:1 grande.
+       Ambos saem de `npm run social`. -->
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="Silas Machado" />
   <meta property="og:locale" content="en_US" />
   <meta property="og:url" content="https://silasassismachado.github.io/" />
   <meta property="og:title" content="Silas Machado — Technical Lead &amp; Software Engineer" />
   <meta property="og:description" content="Security and compliance platforms, from architecture to continuous deploy." />
-  <meta property="og:image" content="https://silasassismachado.github.io/assets/og.jpg" />
+  <meta property="og:image" content="https://silasassismachado.github.io/assets/og-square.jpg" />
   <meta property="og:image:type" content="image/jpeg" />
   <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="Silas Machado ao lado do nome e da função, sobre o azul-noite da marca." />
+  <meta property="og:image:height" content="1200" />
+  <meta property="og:image:alt" content="Silas Machado numa rua, com o nome e a função assinados no pé da foto." />
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="Silas Machado — Technical Lead &amp; Software Engineer" />
   <meta name="twitter:description" content="Security and compliance platforms, from architecture to continuous deploy." />
@@ -37,7 +42,7 @@
     "name": "Silas Machado",
     "jobTitle": "Technical Lead & Software Engineer",
     "url": "https://silasassismachado.github.io/",
-    "image": "https://silasassismachado.github.io/assets/og.jpg",
+    "image": "https://silasassismachado.github.io/assets/og-square.jpg",
     "address": {
       "@type": "PostalAddress",
       "addressLocality": "Vila Nova de Gaia",
