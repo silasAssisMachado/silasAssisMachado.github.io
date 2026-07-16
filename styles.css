@@ -374,20 +374,37 @@ p { text-wrap: pretty; }
   transition: color 0.25s var(--ease), background 0.25s var(--ease);
 }
 .tab:hover { color: var(--ink); background: var(--tint); }
-.tab[aria-selected="true"] { color: #fff; background: var(--ink); }
+.tab[aria-current="page"] { color: #fff; background: var(--ink); }
 
 .panels { flex: 1 0 auto; padding: clamp(2rem, 6vw, 3.5rem) var(--gutter) 4rem; }
-.panel { display: none; max-width: 62rem; margin-inline: auto; }
-/* Painel ativo é sempre visível (opacity 1). O slide é uma classe transitória
-   aplicada só na troca — nunca condiciona a visibilidade do conteúdo. */
-.panel[data-active] { display: block; }
-.panel[data-active].sliding { animation: slidein 0.4s var(--ease); }
+
+/* As seções vivem todas na mesma coluna e rolam juntas — a barra acende sozinha
+   (main.js). Nada de display:none: o que muda a seção é o scroll. */
+.panel { max-width: 62rem; margin-inline: auto; }
+/* Distância entre seções: o suficiente pra ler como capítulo novo, não como
+   continuação do parágrafo anterior. */
+.panel + .panel { margin-top: clamp(3.5rem, 8vw, 6rem); }
+/* A barra grudada no topo não pode cobrir o título de quem chega pela âncora. */
+.panel { scroll-margin-top: 4.5rem; }
+
+/* Fio entre seções: dá o corte sem pesar. */
+.panel + .panel::before {
+  content: "";
+  display: block;
+  height: 1px;
+  background: var(--line);
+  margin-bottom: clamp(3.5rem, 8vw, 6rem);
+}
+
+/* O slide é uma classe transitória, aplicada só na troca de idioma — nunca
+   condiciona a visibilidade do conteúdo (senão ele trava invisível). */
+.panel.sliding { animation: slidein 0.4s var(--ease); }
 @keyframes slidein {
   from { opacity: 0; transform: translateX(var(--slide, 16px)); }
   to   { opacity: 1; transform: translateX(0); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .panel[data-active].sliding { animation: none; }
+  .panel.sliding { animation: none; }
 }
 
 .panel__head { margin-bottom: 2rem; }
@@ -596,7 +613,10 @@ p { text-wrap: pretty; }
    MOBILE snap (foto → conteúdo)
    ========================================================================= */
 @media (max-width: 1023px) {
-  html { scroll-snap-type: y proximity; }
+  /* O snap só existe enquanto a foto ainda está em jogo: ele serve pra "cair"
+     do hero pro conteúdo. Depois disso a coluna é longa e o snap só brigaria
+     com a rolagem — main.js tira a classe assim que passamos do hero. */
+  html.hero-snap { scroll-snap-type: y proximity; }
 }
 
 /* =========================================================================
@@ -644,6 +664,9 @@ p { text-wrap: pretty; }
     min-height: 0;
   }
   .tabbar { position: static; flex: 0 0 auto; padding-inline: clamp(2rem, 3.5vw, 3.5rem); }
+  /* aqui a barra vive fora do que rola: não cobre nada, então a âncora só
+     precisa de um respiro */
+  .panel { scroll-margin-top: 1rem; }
   /* só os painéis rolam — barra de rolagem apenas aqui, com espaço reservado (sem empurrar) */
   .panels {
     flex: 1 1 auto;

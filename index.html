@@ -105,14 +105,17 @@
       </div>
     </header>
 
-    <!-- ============================ CONTEÚDO (abas) ================== -->
+    <!-- ==================== CONTEÚDO (coluna única + scroll-spy) ===== -->
     <main class="content" id="content">
       <div class="tabbar">
-        <nav class="tabs" role="tablist" aria-label="Seções do portfólio">
-          <button class="tab" role="tab" id="tab-about"      aria-controls="about"      aria-selected="true"  data-i18n="tabAbout">Sobre</button>
-          <button class="tab" role="tab" id="tab-career" aria-controls="career" aria-selected="false" data-i18n="tabCareer">Trajetória</button>
-          <button class="tab" role="tab" id="tab-contact"    aria-controls="contact"    aria-selected="false" data-i18n="tabContact">Contato</button>
-          <button class="tab" role="tab" id="tab-projects"   aria-controls="projects"   aria-selected="false" data-i18n="tabProjects">Projetos</button>
+        <!-- Âncoras de verdade, não abas: as seções vivem todas na mesma coluna
+             e a barra acende sozinha conforme a leitura desce (ver main.js).
+             A ordem aqui TEM que ser a ordem do documento. -->
+        <nav class="tabs" aria-label="Seções do portfólio">
+          <a class="tab" id="tab-about"    href="#about"    data-section-link="about"    aria-current="page" data-i18n="tabAbout">Sobre</a>
+          <a class="tab" id="tab-career"   href="#career"   data-section-link="career"   data-i18n="tabCareer">Trajetória</a>
+          <a class="tab" id="tab-projects" href="#projects" data-section-link="projects" data-i18n="tabProjects">Projetos</a>
+          <a class="tab" id="tab-contact"  href="#contact"  data-section-link="contact"  data-i18n="tabContact">Contato</a>
         </nav>
         <div class="lang lang--bar" role="group" aria-label="Language / Idioma">
           <button class="lang__opt" type="button" data-lang="en" aria-pressed="true">EN</button>
@@ -123,10 +126,10 @@
       <div class="panels">
 
         <!-- ---------- SOBRE ---------- -->
-        <section class="panel" id="about" role="tabpanel" aria-labelledby="tab-about" data-active>
+        <section class="panel" id="about" data-section="about" aria-labelledby="h-about">
           <div class="panel__head">
             <p class="eyebrow" data-i18n="kAbout">Sobre</p>
-            <h2 data-i18n="hAbout">Tecnologia que melhora a vida das pessoas.</h2>
+            <h2 id="h-about" data-i18n="hAbout">Tecnologia que melhora a vida das pessoas.</h2>
           </div>
 
           <div class="prose">
@@ -216,10 +219,10 @@
         </section>
 
         <!-- ---------- TRAJETÓRIA ---------- -->
-        <section class="panel" id="career" role="tabpanel" aria-labelledby="tab-career" hidden>
+        <section class="panel" id="career" data-section="career" aria-labelledby="h-career">
           <div class="panel__head">
             <p class="eyebrow" data-i18n="kCareer">Trajetória</p>
-            <h2 data-i18n="hCareer">Uma década construindo e liderando.</h2>
+            <h2 id="h-career" data-i18n="hCareer">Uma década construindo e liderando.</h2>
             <p data-i18n="subCareer">De estagiário a Technical Lead — pagamentos, marketplaces, jogos, integrações e, hoje, segurança e compliance.</p>
           </div>
 
@@ -290,10 +293,10 @@
         </section>
 
         <!-- ---------- PROJETOS ---------- -->
-        <section class="panel" id="projects" role="tabpanel" aria-labelledby="tab-projects" hidden>
+        <section class="panel" id="projects" data-section="projects" aria-labelledby="h-projects">
           <div class="panel__head">
             <p class="eyebrow" data-i18n="kProjects">Projetos</p>
-            <h2 data-i18n="hProjects">Coisas que construí.</h2>
+            <h2 id="h-projects" data-i18n="hProjects">Coisas que construí.</h2>
             <p data-i18n="subProjects">Produtos próprios primeiro. Depois, um mergulho no ecossistema DataHubz de segurança e compliance.</p>
           </div>
 
@@ -348,10 +351,10 @@
         </section>
 
         <!-- ---------- CONTATO ---------- -->
-        <section class="panel" id="contact" role="tabpanel" aria-labelledby="tab-contact" hidden>
+        <section class="panel" id="contact" data-section="contact" aria-labelledby="h-contact">
           <div class="panel__head">
             <p class="eyebrow" data-i18n="kContact">Contato</p>
-            <h2 data-i18n="hContact">Vamos construir algo.</h2>
+            <h2 id="h-contact" data-i18n="hContact">Vamos construir algo.</h2>
           </div>
 
           <div class="contact">

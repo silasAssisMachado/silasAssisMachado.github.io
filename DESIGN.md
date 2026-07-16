@@ -56,7 +56,8 @@ spacing:
 
 **North star: "É um perfil, não um panfleto."** O site herda a experiência de
 navegação photo-first do perfil público do StreetSlopes (ADR-0018): uma foto
-full-bleed carrega a identidade, o conteúdo se abre em abas. No mobile a foto
+full-bleed carrega a identidade e o conteúdo desce numa coluna única, com a
+barra de seções acendendo sozinha conforme a leitura avança. No mobile a foto
 ocupa a tela toda e o conteúdo entra por snap-scroll; no desktop vira um split
 foto-esquerda / conteúdo-direita. A foto é o produto.
 
@@ -88,9 +89,12 @@ apertado (−0.035em); corpo em 420 a 1.65 de entrelinha, ≤ 68ch.
 - **Shell**: mobile = documento com snap suave (hero 100dvh → conteúdo); desktop
   ≥1024px = grid 40/60 (36/64 em ≥1280px), foto fixa à esquerda com borda que
   desvanece para o conteúdo.
-- **Abas** (Sobre / Trajetória / Projetos / Contato): nav sticky no topo do
-  conteúdo, pílula ativa em tinta escura, troca com slide direcional (imita o
-  shell do StreetSlopes).
+- **Seções** (Sobre → Trajetória → Projetos → Contato, nesta ordem): as quatro
+  vivem na mesma coluna e rolam juntas, separadas por um fio. A nav sticky no
+  topo do conteúdo é scroll-spy — pílula em tinta escura acende a seção que
+  está sendo lida, e clicar rola até ela. Não são abas: navegar é rolar, e a
+  ordem do documento é a ordem da barra. Contato fecha a página porque é a
+  ação que ela pede.
 - **Trajetória**: timeline real (a ordem carrega informação) com trilho e dots
   indigo — não cards idênticos.
 - **Projetos**: lista de produtos do ecossistema DataHubz, cada um com tag e
@@ -99,8 +103,9 @@ apertado (−0.035em); corpo em 420 a 1.65 de entrelinha, ≤ 68ch.
 ## 5. Motion
 
 Entrada da hero em stagger (aprimora um default já visível, não bloqueia
-conteúdo), leve ken-burns na foto, dica de scroll com nudge, e slide direcional
-na troca de abas. Curvas ease-out (cubic-bezier(0.22,1,0.36,1)), sem bounce.
+conteúdo), leve ken-burns na foto, dica de scroll com nudge, e slide na troca de
+idioma. A troca de seção não anima: a animação é a própria rolagem.
+Curvas ease-out (cubic-bezier(0.22,1,0.36,1)), sem bounce.
 Tudo com alternativa em `prefers-reduced-motion: reduce`.
 
 ## 6. Assets

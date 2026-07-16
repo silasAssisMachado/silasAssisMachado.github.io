@@ -27,7 +27,7 @@ senioridade e ou entrar em contato, ou baixar o CV, ou seguir nas redes.
 
 ## Conversion & proof
 - Primary e secondary CTA: **Baixar CV** (PDF) como ação primária, presente na
-  hero e na aba Contato; contato direto por e-mail / LinkedIn como fallback.
+  hero e na seção Contato (que fecha a página); e-mail / LinkedIn como fallback.
 - A linha que o visitante lembra depois de 10 segundos: *"Technical Lead que
   constrói plataformas de segurança e compliance, da arquitetura ao deploy."*
 - Belief ladder: (1) essa pessoa é técnica de verdade → (2) tem senioridade e
@@ -40,7 +40,8 @@ senioridade e ou entrar em contato, ou baixar o CV, ou seguir nas redes.
 ## Positioning
 
 A experiência de navegação photo-first do StreetSlopes aplicada a um portfólio:
-a foto é o produto, a identidade vive sobre ela, e o conteúdo se abre em abas.
+a foto é o produto, a identidade vive sobre ela, e o conteúdo desce numa coluna
+única com a barra de seções acendendo conforme a leitura avança.
 Nada de landing genérica de dev — é um perfil, não um panfleto.
 
 ## Brand Personality
@@ -71,7 +72,8 @@ enxuto.
 
 ## Accessibility & Inclusion
 
-Contraste AA em todo o texto (corpo ≥ 4.5:1). Navegação por teclado nas abas
-(setas / Home / End), foco visível, `prefers-reduced-motion` respeitado com
+Contraste AA em todo o texto (corpo ≥ 4.5:1). A barra de seções é feita de
+âncoras reais: Tab percorre, Enter rola até a seção, e cada seção é nomeada pelo
+próprio título. Foco visível, `prefers-reduced-motion` respeitado com
 alternativas. Alt text descritivo na foto. Sem depender só de cor para
 significado.

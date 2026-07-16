@@ -1,5 +1,6 @@
 /* Silas Machado — portfólio
-   Abas (padrão do profile shell) + i18n PT/EN + menu de CV. Sem dependências. */
+   Coluna única com scroll-spy (a barra acende a seção conforme a leitura desce)
+   + i18n PT/EN + menu de CV. Sem dependências. */
 (function () {
   'use strict';
 
@@ -107,8 +108,11 @@
     langButtons.forEach(function (b) {
       b.setAttribute('aria-pressed', b.getAttribute('data-lang') === lang ? 'true' : 'false');
     });
-    // Troca de idioma também desliza o conteúdo ativo.
-    if (langReady) playSlide(document.querySelector('.panel[data-active]'), 16);
+    // Troca de idioma desliza a seção que está sendo lida (a que a barra acende).
+    if (langReady) {
+      var lit = document.querySelector('[data-section-link][aria-current="page"]');
+      if (lit) playSlide(document.getElementById(lit.getAttribute('data-section-link')), 16);
+    }
   }
 
   langButtons.forEach(function (b) {
@@ -119,80 +123,120 @@
   setLang('en');
   langReady = true;
 
-  /* ------------------------------------------------------------- abas */
-  var tabs = Array.prototype.slice.call(document.querySelectorAll('.tab'));
-  var panelsById = {};
-  tabs.forEach(function (t) { panelsById[t.getAttribute('aria-controls')] = document.getElementById(t.getAttribute('aria-controls')); });
-  var order = tabs.map(function (t) { return t.getAttribute('aria-controls'); });
+  /* --------------------------------------------------------- scroll-spy
+     Não são abas: as quatro seções vivem na mesma coluna e rolam juntas. A
+     barra só reflete onde a leitura está. Quem rola muda com o layout — no
+     desktop é .panels (o resto da tela é fixo), no mobile é a janela. */
+  var links = Array.prototype.slice.call(document.querySelectorAll('[data-section-link]'));
+  var sections = Array.prototype.slice.call(document.querySelectorAll('[data-section]'));
+  var panels = document.querySelector('.panels');
+  var content = document.getElementById('content');
+  var desktop = window.matchMedia('(min-width: 1024px)');
 
-  function currentId() {
-    var sel = document.querySelector('.tab[aria-selected="true"]');
-    return sel ? sel.getAttribute('aria-controls') : order[0];
+  function sectionByName(name) {
+    for (var i = 0; i < sections.length; i++) {
+      if (sections[i].getAttribute('data-section') === name) return sections[i];
+    }
+    return null;
   }
 
-  function activate(id) {
-    if (!panelsById[id]) return;
-    var dir = order.indexOf(id) >= order.indexOf(currentId()) ? 18 : -18;
-    tabs.forEach(function (t) { t.setAttribute('aria-selected', t.getAttribute('aria-controls') === id ? 'true' : 'false'); });
-    order.forEach(function (pid) {
-      var p = panelsById[pid];
-      if (pid === id) {
-        p.hidden = false;
-        p.setAttribute('data-active', '');
-        playSlide(p, dir);
-      } else {
-        p.hidden = true;
-        p.removeAttribute('data-active');
-      }
+  function setCurrent(name) {
+    links.forEach(function (a) {
+      if (a.getAttribute('data-section-link') === name) a.setAttribute('aria-current', 'page');
+      else a.removeAttribute('aria-current');
     });
-    var panels = document.querySelector('.panels');
-    if (panels && window.matchMedia('(min-width: 1024px)').matches) panels.scrollTop = 0;
-    if (history.replaceState) history.replaceState(null, '', '#' + id);
   }
 
-  tabs.forEach(function (t, i) {
-    t.addEventListener('click', function () { activate(t.getAttribute('aria-controls')); });
-    t.addEventListener('keydown', function (e) {
-      var next;
-      if (e.key === 'ArrowRight' || e.key === 'ArrowDown') next = (i + 1) % tabs.length;
-      else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') next = (i - 1 + tabs.length) % tabs.length;
-      else if (e.key === 'Home') next = 0;
-      else if (e.key === 'End') next = tabs.length - 1;
-      else return;
+  var syncFrame = null;
+
+  function syncSpy() {
+    syncFrame = null;
+    if (!sections.length) return;
+
+    var onDesktop = desktop.matches && panels;
+    // A seção "vale" quando o topo dela cruza uma linha um pouco abaixo do
+    // começo da área de leitura — não o topo exato, senão ela só acende quando
+    // já saiu de vista.
+    var line = onDesktop
+      ? panels.getBoundingClientRect().top + Math.min(panels.clientHeight * 0.3, 180)
+      : Math.min(window.innerHeight * 0.3, 200);
+    // No fim da rolagem a última seção pode ser curta demais pra cruzar a linha.
+    // Sem isto, "Contato" nunca acende.
+    var atEnd = onDesktop
+      ? panels.scrollTop + panels.clientHeight >= panels.scrollHeight - 4
+      : window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 4;
+
+    var current = sections[0];
+    sections.forEach(function (s) {
+      if (s.getBoundingClientRect().top <= line) current = s;
+    });
+    if (atEnd) current = sections[sections.length - 1];
+
+    setCurrent(current.getAttribute('data-section'));
+  }
+
+  function requestSpy() {
+    if (syncFrame === null) syncFrame = window.requestAnimationFrame(syncSpy);
+  }
+
+  function goTo(name) {
+    var target = sectionByName(name);
+    if (!target) return;
+    target.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+    setCurrent(name);
+    if (history.replaceState) history.replaceState(null, '', '#' + name);
+  }
+
+  links.forEach(function (a) {
+    a.addEventListener('click', function (e) {
       e.preventDefault();
-      tabs[next].focus();
-      activate(tabs[next].getAttribute('aria-controls'));
+      goTo(a.getAttribute('data-section-link'));
     });
   });
 
-  var hash = (location.hash || '').replace('#', '');
-  if (hash && panelsById[hash]) activate(hash);
+  /* O snap da foto só vale enquanto o hero está em jogo (ver styles.css). */
+  function syncHeroSnap() {
+    var boundary = content ? content.offsetTop : 0;
+    var near = !desktop.matches && window.scrollY <= boundary + 2;
+    document.documentElement.classList.toggle('hero-snap', near);
+  }
+
+  window.addEventListener('scroll', function () { requestSpy(); syncHeroSnap(); }, { passive: true });
+  if (panels) panels.addEventListener('scroll', requestSpy, { passive: true });
+  window.addEventListener('resize', function () { requestSpy(); syncHeroSnap(); });
+  desktop.addEventListener('change', function () { requestSpy(); syncHeroSnap(); });
+  window.addEventListener('hashchange', function () {
+    var name = (location.hash || '').replace('#', '');
+    if (sectionByName(name)) goTo(name);
+  });
 
   /* --------------------------------------------------- dica de scroll */
   var hint = document.querySelector('[data-scrollto]');
   if (hint) {
     hint.addEventListener('click', function (e) {
       e.preventDefault();
-      activate('about');
-      var content = document.getElementById('content');
-      if (content) content.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
+      goTo('about');
     });
   }
 
-  /* ------------------------------------- CTA interno: pula pra outra aba */
+  /* --------------------------------- CTA interno: rola até outra seção */
   document.querySelectorAll('[data-goto]').forEach(function (el) {
     el.addEventListener('click', function (e) {
       e.preventDefault();
-      var target = el.getAttribute('data-goto');
-      activate(target);
-      var tabBtn = document.getElementById('tab-' + target);
-      if (tabBtn) tabBtn.focus({ preventScroll: true });
-      var content = document.getElementById('content');
-      if (content && !window.matchMedia('(min-width: 1024px)').matches) {
-        content.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'start' });
-      }
+      goTo(el.getAttribute('data-goto'));
     });
   });
+
+  var hash = (location.hash || '').replace('#', '');
+  syncHeroSnap();
+  if (sectionByName(hash)) {
+    setCurrent(hash);
+    window.requestAnimationFrame(function () {
+      sectionByName(hash).scrollIntoView({ behavior: 'auto', block: 'start' });
+    });
+  } else {
+    requestSpy();
+  }
 
   /* --------------------------------------- menu CV: fecha ao clicar fora */
   document.addEventListener('click', function (e) {
