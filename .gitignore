@@ -4,4 +4,8 @@ node_modules/
 *:Zone.Identifier
 .DS_Store
 Thumbs.db
+
+# Mocks/comparações que eu gero pra decidir — ferramenta, não entregável
 comparacao-whatsapp.png
+tint-compare.png
+shot-*.png
