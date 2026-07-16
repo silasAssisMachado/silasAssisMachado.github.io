@@ -110,39 +110,24 @@ const ogWide = `<!doctype html><meta charset="utf-8">
 </div>`
 
 /**
- * Quadrado: a foto é o cartão. O texto vira uma faixa baixa, só pra assinar —
- * o WhatsApp já repete título e descrição embaixo da imagem, então competir
- * com ele é ruído.
+ * Quadrado: a foto E SÓ. Sem texto de propósito — o WhatsApp já escreve nome e
+ * descrição ao lado da imagem, e no tamanho em que ele desenha a miniatura
+ * (~76px) qualquer texto embutido vira borrão. Quem tem que ler em 76px é o
+ * rosto, então o corte fecha nele.
+ *
+ * Sem tint também: aqui a foto é um retrato, não um cartão. O índigo em cima da
+ * pele deixa o rosto roxo, e um rosto tem que parecer um rosto — a marca fica
+ * pro site. (O zoom para em 1.55: a origem é 1100x1760 e mais que isso amolece.)
  */
 const ogSquare = `<!doctype html><meta charset="utf-8">
 <style>
   ${cardCss}
   body { width: 1200px; height: 1200px; }
-  .media img { object-position: 52% 16%; }
-  /* Só o pé escurece, pra assinatura ter contraste sem cobrir o rosto. */
-  .fade { position: absolute; inset: 0;
-    background: linear-gradient(to top, ${NIGHT} 0%,
-      color-mix(in srgb, ${NIGHT}, transparent 25%) 18%,
-      color-mix(in srgb, ${NIGHT}, transparent 80%) 34%, transparent 52%); }
-  .copy {
-    position: absolute; inset: auto 0 0 0;
-    padding: 0 72px 68px; display: flex; flex-direction: column; gap: 14px;
-  }
-  .loc { font-size: 22px; }
-  h1 { font-size: 92px; }
-  .role { font-size: 27px; }
-  .rule { width: 110px; margin-top: 4px; }
+  .media { overflow: hidden; }
+  .media img { object-position: 50% 12%; transform: scale(1.55); transform-origin: 52% 22%; }
 </style>
 <div class="media">
   <img src="data:image/jpeg;base64,${photo}" alt="">
-  <div class="tint"></div>
-  <div class="fade"></div>
-</div>
-<div class="copy">
-  <span class="loc">Vila Nova de Gaia · Porto, Portugal</span>
-  <h1>Silas Machado</h1>
-  <span class="role">Technical Lead · Software Engineer</span>
-  <div class="rule"></div>
 </div>`
 
 const browser = await puppeteer.launch({
